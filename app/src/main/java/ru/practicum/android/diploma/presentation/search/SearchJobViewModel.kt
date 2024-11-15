@@ -24,6 +24,7 @@ class SearchJobViewModel(private val hhInteractor: HhInteractor) : ViewModel() {
     private val _vacanciesState = MutableLiveData<VacanciesState>()
     val vacanciesState: LiveData<VacanciesState> = _vacanciesState
 
+    private var lastSearchText: String? = null
     private var searchJob: Job? = null
 
     // переменные для работы с paggination
@@ -53,7 +54,7 @@ class SearchJobViewModel(private val hhInteractor: HhInteractor) : ViewModel() {
     }
 
     // эта ф-ия берет запрос из EditText и запрашивает данные с сервека через hhInteractor
-    fun searchVacancies(query: String) {
+    private fun searchVacancies(query: String) {
         if (currentQuery != query) {
             currentPage = 0
             isLastPage = false
@@ -110,6 +111,17 @@ class SearchJobViewModel(private val hhInteractor: HhInteractor) : ViewModel() {
                 }
                 isLoading = false
             }
+        }
+    }
+
+    fun searchDebounce(changedText: String) {
+        if (lastSearchText == changedText) {
+            return
+        }
+        lastSearchText = changedText
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            searchVacancies(changedText)
         }
     }
 
