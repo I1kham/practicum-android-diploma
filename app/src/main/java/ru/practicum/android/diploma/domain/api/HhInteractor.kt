@@ -6,4 +6,5 @@ import ru.practicum.android.diploma.util.Resource
 
 interface HhInteractor {
     suspend fun getVacancies(expression: HashMap<String, String>): Flow<Resource<List<Vacancy>>>
+    suspend fun searchVacanceById(id: String): Flow<Resource<Vacancy>>
 }

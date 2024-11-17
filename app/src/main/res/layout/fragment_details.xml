@@ -26,9 +26,7 @@
         app:layout_constraintTop_toTopOf="@+id/toolbar_back_button"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar_back_button"
         android:text="@string/vacancy"
-        android:fontFamily="@font/ys_display_medium"
-        android:textSize="22sp"
-        android:textColor="@color/black"/>
+        style="@style/textSize22"/>
 
     <ImageButton
         android:id="@+id/toolbar_like_button"
@@ -62,10 +60,8 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="4dp"
-        android:text="Android-разработчик"
-        android:fontFamily="@font/ys_display_bold"
-        android:textSize="32sp"
-        android:textColor="@color/black"/>
+        tools:text="Android-разработчик"
+        style="@style/textSize32" />
 
     <TextView
         android:id="@+id/title_salary"
@@ -74,10 +70,8 @@
         app:layout_constraintTop_toBottomOf="@+id/title_name"
         app:layout_constraintStart_toStartOf="@+id/title_name"
         android:layout_marginBottom="8dp"
-        android:text="от 100 000 ₽"
-        android:fontFamily="@font/ys_display_medium"
-        android:textSize="22sp"
-        android:textColor="@color/black"/>
+        tools:text="от 100 000 ₽"
+        style="@style/textSize22" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/card_view"
@@ -120,19 +114,17 @@
                     android:id="@+id/card_title_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Еда"
-                    android:fontFamily="@font/ys_display_medium"
-                    android:textSize="22sp"
-                    android:textColor="@color/black"/>
+                    tools:text="Еда"
+                    android:textColor="@color/black_universal"
+                    style="@style/textSize22"/>
 
                 <TextView
                     android:id="@+id/card_city_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Москва"
-                    android:fontFamily="@font/ys_display_regular"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/black_universal"
+                    tools:text="Москва"
+                    style="@style/textSize16"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -144,9 +136,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/experience"
+        style="@style/textSize16"
         android:fontFamily="@font/ys_display_medium"
-        android:textSize="16sp"
-        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@+id/card_view"
         app:layout_constraintTop_toBottomOf="@+id/card_view"
         android:layout_marginTop="24dp"/>
@@ -155,10 +146,8 @@
         android:id="@+id/experience_title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="От 1 года до 3 лет"
-        android:fontFamily="@font/ys_display_regular"
-        android:textSize="16sp"
-        android:textColor="@color/black"
+        tools:text="От 1 года до 3 лет"
+        style="@style/textSize16"
         app:layout_constraintStart_toStartOf="@+id/experience_title"
         app:layout_constraintTop_toBottomOf="@+id/experience_title"
         android:layout_marginTop="4dp"/>
@@ -167,10 +156,8 @@
         android:id="@+id/work_shift_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Полная занятость, Удаленная работа"
-        android:fontFamily="@font/ys_display_regular"
-        android:textSize="16sp"
-        android:textColor="@color/black"
+        tools:text="Полная занятость, Удаленная работа"
+        style="@style/textSize16"
         app:layout_constraintStart_toStartOf="@+id/experience_title_text"
         app:layout_constraintTop_toBottomOf="@+id/experience_title_text"
         android:layout_marginTop="8dp"/>
@@ -184,18 +171,14 @@
         android:layout_marginBottom="16dp"
         android:layout_marginTop="32sp"
         android:text="@string/description_title"
-        android:fontFamily="@font/ys_display_medium"
-        android:textSize="22sp"
-        android:textColor="@color/black"/>
+        style="@style/textSize22"/>
 
     <TextView
         android:id="@+id/description_html_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="html"
-        android:fontFamily="@font/ys_display_regular"
-        android:textSize="16sp"
-        android:textColor="@color/black"
+        tools:text="html"
+        style="@style/textSize16"
         app:layout_constraintStart_toStartOf="@+id/description_title"
         app:layout_constraintTop_toBottomOf="@+id/description_title"
         android:layout_marginTop="16sp"/>
@@ -208,19 +191,15 @@
         app:layout_constraintStart_toStartOf="@+id/description_html_text"
         android:layout_marginBottom="16dp"
         android:layout_marginTop="24sp"
-        android:text="@string/key_skills_title"
-        android:fontFamily="@font/ys_display_medium"
-        android:textSize="22sp"
-        android:textColor="@color/black"/>
+        style="@style/textSize22"
+        android:text="@string/key_skills_title" />
 
     <TextView
         android:id="@+id/key_skills_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Навыки"
-        android:fontFamily="@font/ys_display_regular"
-        android:textSize="16sp"
-        android:textColor="@color/black"
+        tools:text="Навыки"
+        style="@style/textSize16"
         app:layout_constraintStart_toStartOf="@+id/key_skills_title"
         app:layout_constraintTop_toBottomOf="@+id/key_skills_title"
         android:layout_marginTop="16sp"/>

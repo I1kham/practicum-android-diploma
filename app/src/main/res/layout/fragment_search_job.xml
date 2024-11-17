@@ -15,10 +15,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="19dp"
-        android:fontFamily="@font/ys_display_medium"
         android:text="@string/search_jobs"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="22sp"
+        style="@style/textSize22"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,7 +84,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/no_internet_layout"
+        android:id="@+id/error_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -98,20 +96,20 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
+            android:id="@+id/error_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/no_internet"
             android:src="@drawable/no_internet_placeholder" />
 
         <TextView
+            android:id="@+id/error_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
-            android:fontFamily="@font/ys_display_medium"
             android:text="@string/no_internet"
-            android:textColor="?attr/colorOnBackground"
-            android:textSize="22sp" />
+            style="@style/textSize22" />
 
     </LinearLayout>
 
@@ -138,11 +136,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
-            android:fontFamily="@font/ys_display_medium"
             android:gravity="center"
-            android:text="@string/couldnt_get_job_list"
-            android:textColor="?attr/colorOnBackground"
-            android:textSize="22sp" />
+            style="@style/textSize22"
+            android:text="@string/couldnt_get_job_list" />
     </LinearLayout>
 
     <ProgressBar

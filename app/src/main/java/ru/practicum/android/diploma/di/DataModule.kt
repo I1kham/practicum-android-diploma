@@ -38,5 +38,4 @@ val dataModule = module {
             context = androidContext()
         )
     }
-
 }

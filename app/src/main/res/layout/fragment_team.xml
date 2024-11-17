@@ -13,10 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="19dp"
-        android:fontFamily="@font/ys_display_medium"
         android:text="@string/team_but"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="22sp"
+        style="@style/textSize22"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,10 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="52dp"
-        android:fontFamily="@font/ys_display_bold"
         android:text="@string/team_screen_title"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="32sp"
+        style="@style/textSize32"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/team" />
 
@@ -40,8 +36,7 @@
         android:layout_marginTop="42dp"
         android:fontFamily="@font/ys_display_medium"
         android:text="@string/first_team_mate"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="16sp"
+        style="@style/textSize16"
         app:layout_constraintStart_toStartOf="@id/team_title"
         app:layout_constraintTop_toBottomOf="@id/team_title" />
 
@@ -52,8 +47,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/ys_display_medium"
         android:text="@string/second_team_mate"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="16sp"
+        style="@style/textSize16"
         app:layout_constraintStart_toStartOf="@id/team_title"
         app:layout_constraintTop_toBottomOf="@id/first_team_mate" />
 
@@ -64,8 +58,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/ys_display_medium"
         android:text="@string/third_team_mate"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="16sp"
+        style="@style/textSize16"
         app:layout_constraintStart_toStartOf="@id/team_title"
         app:layout_constraintTop_toBottomOf="@id/second_team_mate" />
 
@@ -76,8 +69,7 @@
         android:layout_marginTop="16dp"
         android:fontFamily="@font/ys_display_medium"
         android:text="@string/fourth_team_mate"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="16sp"
+        style="@style/textSize16"
         app:layout_constraintStart_toStartOf="@id/team_title"
         app:layout_constraintTop_toBottomOf="@id/third_team_mate" />
 
@@ -87,9 +79,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="@font/ys_display_medium"
+        style="@style/textSize16"
         android:text="@string/fifth_team_mate"
-        android:textColor="?attr/colorOnBackground"
-        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="@id/team_title"
         app:layout_constraintTop_toBottomOf="@id/fourth_team_mate" />
 
