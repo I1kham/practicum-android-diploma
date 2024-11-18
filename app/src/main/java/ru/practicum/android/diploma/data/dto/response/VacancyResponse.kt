@@ -34,5 +34,5 @@ class VacancyResponse(
     val contacts: ContactsData?,
     val description: String?,
     val schedule: ScheduleData?,
-    val url: String?,
+    @SerializedName("alternate_url") val url: String?,
     ) : Response()
