@@ -10,5 +10,12 @@
         android:layout_height="match_parent"
         android:text="11 экран в фигме"
         android:textSize="40dp"/>
+    <Button
+        android:id="@+id/button"
+        android:layout_marginVertical="150dp"
+        android:layout_marginHorizontal="150dp"
+        android:text="регион"
+        android:layout_width="150dp"
+        android:layout_height="150dp"/>
 
 </FrameLayout>

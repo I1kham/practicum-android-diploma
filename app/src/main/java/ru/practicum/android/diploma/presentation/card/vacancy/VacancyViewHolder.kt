@@ -1,10 +1,9 @@
-package ru.practicum.android.diploma.presentation.card.adapters
+package ru.practicum.android.diploma.presentation.card.vacancy
 
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.JobItemBinding
 import ru.practicum.android.diploma.domain.models.entity.Vacancy
+import ru.practicum.android.diploma.util.fillBy
 import ru.practicum.android.diploma.util.format
 
 class VacancyViewHolder(private val binding: JobItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -16,12 +15,7 @@ class VacancyViewHolder(private val binding: JobItemBinding) : RecyclerView.View
             cardSalaryText.text = vacancy.salary.format()
 
             vacancy.employer?.logoUrls?.original.let { logoUrl ->
-                Glide.with(binding.root)
-                    .load(logoUrl)
-                    .placeholder(R.drawable.placeholder_recycleview)
-                    .centerInside()
-                    .into(cardImage)
-
+                cardImage.fillBy(logoUrl, itemView.context)
             }
         }
     }

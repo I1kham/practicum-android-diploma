@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.presentation.card.adapters
+package ru.practicum.android.diploma.presentation.card.vacancy
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

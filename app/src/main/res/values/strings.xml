@@ -47,4 +47,7 @@
     <string name="industry_selection">Выбор отрасли</string>
     <string name="select">Выбрать</string>
     <string name="clear">Очистить</string>
+    <string name="select_city">Выбор региона</string>
+    <string name="enter_city_name">Введите регион</string>
+    <string name="no_city_found">Такого региона нет</string>
 </resources>

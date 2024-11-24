@@ -17,12 +17,6 @@ import java.net.SocketTimeoutException
 
 class SearchJobViewModel(private val hhInteractor: HhInteractor) : ViewModel() {
     // Кто будет выполнять задание на обработку ошибок, то сообщение будет на стр 132
-    companion object {
-        private const val DEBOUNCE_SEARCH_TIME = 2000L
-        private const val DEBOUNCE_PAGE_TIME = 300L
-        private const val PAGE_SIZE = 20 // кол-во элементов на странице для отображения в RV
-    }
-
     private val _vacanciesState = MutableLiveData<VacanciesState>()
     val vacanciesState: LiveData<VacanciesState> = _vacanciesState
 
@@ -162,5 +156,9 @@ class SearchJobViewModel(private val hhInteractor: HhInteractor) : ViewModel() {
     private fun handleError(responseCode: ResponseStatusCode?) {
         pushVacanciesState(VacanciesState.Error(responseCode))
     }
-
+    companion object {
+        private const val DEBOUNCE_SEARCH_TIME = 2000L
+        private const val DEBOUNCE_PAGE_TIME = 300L
+        private const val PAGE_SIZE = 20 // кол-во элементов на странице для отображения в RV
+    }
 }
