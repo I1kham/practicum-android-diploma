@@ -6,11 +6,11 @@ import ru.practicum.android.diploma.domain.models.entity.FilterShared
 
 class FilterInteractorImpl(private val filterRepository: FilterRepository) : FilterInteractor {
     override suspend fun getFilter(): FilterShared? {
-        return filterRepository.getTempFilter()
+        return filterRepository.getFilter()
     }
 
     override suspend fun saveFilter(filterShared: FilterShared?) {
-        return filterRepository.saveTempFilter(filterShared)
+        return filterRepository.saveFilter(filterShared)
     }
 
     override suspend fun getTempFilter(): FilterShared? {

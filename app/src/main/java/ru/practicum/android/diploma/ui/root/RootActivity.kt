@@ -59,8 +59,5 @@ class RootActivity : AppCompatActivity() {
     companion object {
         /*ключ для передачи id вакансии между фрагментами через safeArgs*/
         const val VACANCY_TRANSFER_KEY = "vacancy_id"
-
-        /* ключ для передачи айДи страны */
-        const val COUNTRY_TRANSFER_KEY = "country_id"
     }
 }

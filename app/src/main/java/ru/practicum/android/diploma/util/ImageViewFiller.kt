@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.ViewTarget
 import ru.practicum.android.diploma.R
 
@@ -13,6 +14,8 @@ fun ImageView.fillBy(
 ): ViewTarget<ImageView, Drawable> {
     return Glide.with(context)
         .load(uri)
+        .diskCacheStrategy(DiskCacheStrategy.NONE)
+        .skipMemoryCache(true)
         .placeholder(R.drawable.placeholder_recycleview)
         .fitCenter()
         .into(this)

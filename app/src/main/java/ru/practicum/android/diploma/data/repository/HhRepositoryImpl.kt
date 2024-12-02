@@ -6,15 +6,14 @@ import ru.practicum.android.diploma.data.convertors.VacancyDtoConvertor
 import ru.practicum.android.diploma.data.dto.request.CountriesRequest
 import ru.practicum.android.diploma.data.dto.request.VacanciesSearchRequest
 import ru.practicum.android.diploma.data.dto.request.VacancyByIdRequest
-import ru.practicum.android.diploma.data.dto.response.CountriesResponse
+import ru.practicum.android.diploma.data.dto.response.CityResponse
 import ru.practicum.android.diploma.data.dto.response.VacanciesResponse
 import ru.practicum.android.diploma.data.dto.response.VacancyResponse
-import ru.practicum.android.diploma.data.dto.vacancy.CountryData
 import ru.practicum.android.diploma.data.dto.vacancy.VacancyData
 import ru.practicum.android.diploma.data.dto.vacancy.map
 import ru.practicum.android.diploma.data.network.NetworkClient
 import ru.practicum.android.diploma.domain.api.hh.HhRepository
-import ru.practicum.android.diploma.domain.models.entity.Country
+import ru.practicum.android.diploma.domain.models.entity.Area
 import ru.practicum.android.diploma.domain.models.entity.Vacancy
 import ru.practicum.android.diploma.util.Resource
 import ru.practicum.android.diploma.util.ResponseStatusCode
@@ -88,7 +87,7 @@ class HhRepositoryImpl(
         }
     }
 
-    override suspend fun searchCountries(): Flow<Resource<List<Country>>> = flow {
+    override suspend fun searchCountries(): Flow<Resource<List<Area>>> = flow {
         val response = networkClient.getCountries(CountriesRequest())
         when (response.resultCode) {
             is ResponseStatusCode.NoInternet -> {
@@ -96,11 +95,11 @@ class HhRepositoryImpl(
             }
 
             is ResponseStatusCode.Ok -> {
-                if (response is CountriesResponse) {
+                if (response is CityResponse) {
                     emit(
                         Resource.Success(
-                            response.countries.map { countryData: CountryData ->
-                                countryData.map()
+                            response.areas.map { areaData ->
+                                areaData.map()
                             }
                         )
                     )
