@@ -59,7 +59,6 @@ class RootActivity : AppCompatActivity() {
     companion object {
         /*ключ для передачи id вакансии между фрагментами через safeArgs*/
         const val VACANCY_TRANSFER_KEY = "vacancy_id"
-
         /* не желаемый регион */
         const val NOT_DESIRED_AREA_KEY = "1001"
     }
