@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.query
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.filter.FilterInteractor
@@ -66,7 +65,7 @@ class SearchJobViewModel(
     // эта ф-ия берет запрос из EditText и запрашивает данные с сервека через hhInteractor
     private fun searchVacancies(query: String) {
         if (currentQuery != query) {
-            println("current: $currentQuery, query: $query")
+            clearVacancies()
             currentPage = 0
             maxPage = 0
             isLastPage = false
@@ -77,7 +76,7 @@ class SearchJobViewModel(
     }
 
     private fun pushVacanciesState(state: VacanciesState) {
-        _vacanciesState.postValue(state)
+        _vacanciesState.value = state
     }
 
     private fun loadVacancies() {
@@ -173,7 +172,6 @@ class SearchJobViewModel(
             val filter = filterInteractor.getFilter()
             _savedFilter.value = filter
             if (filter?.apply == true) {
-                pushVacanciesState(VacanciesState.Start)
                 currentPage = 0
                 maxPage = 0
                 isLastPage = false
