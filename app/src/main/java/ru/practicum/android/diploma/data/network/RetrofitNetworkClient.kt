@@ -9,11 +9,11 @@ import ru.practicum.android.diploma.data.dto.request.CountriesRequest
 import ru.practicum.android.diploma.data.dto.request.VacanciesSearchRequest
 import ru.practicum.android.diploma.data.dto.request.VacancyByIdRequest
 import ru.practicum.android.diploma.data.dto.response.CityResponse
-import ru.practicum.android.diploma.data.dto.response.CountriesResponse
 import ru.practicum.android.diploma.data.dto.response.IndustriesResponse
 import ru.practicum.android.diploma.data.dto.response.Response
 import ru.practicum.android.diploma.data.dto.response.VacancyResponse
 import ru.practicum.android.diploma.data.dto.vacancy.AreaData
+import ru.practicum.android.diploma.ui.root.RootActivity.Companion.NOT_DESIRED_AREA_KEY
 import ru.practicum.android.diploma.util.ResponseStatusCode
 import ru.practicum.android.diploma.util.isNetworkAvailable
 
@@ -106,7 +106,11 @@ class RetrofitNetworkClient(
                 try {
                     val list: MutableList<AreaData> = mutableListOf()
                     hhService.getAllArea().map { cityResponse ->
-                        cityResponse.areas.map { areaData -> list.add(areaData.copy(parentName = cityResponse.name)) }
+                        cityResponse.areas.map { areaData ->
+                            if (areaData.parentId != NOT_DESIRED_AREA_KEY) {
+                                list.add(areaData.copy(parentName = cityResponse.name))
+                            }
+                        }
                     }
                     val response = CityResponse(null, null, list)
                     response.apply { resultCode = ResponseStatusCode.Ok }
@@ -125,7 +129,23 @@ class RetrofitNetworkClient(
             withContext(Dispatchers.IO) {
                 try {
                     val response = hhService.searchCountries()
-                    CountriesResponse(response).apply { resultCode = ResponseStatusCode.Ok }
+                    val list = mutableListOf<AreaData>()
+                    response.map { response ->
+                        list.add(
+                            AreaData(
+                                id = response.id,
+                                parentId = null,
+                                parentName = null,
+                                name = response.name,
+                                url = null
+                            )
+                        )
+                    }
+                    CityResponse(
+                        id = null,
+                        name = null,
+                        areas = list.toList()
+                    ).apply { resultCode = ResponseStatusCode.Ok }
                 } catch (e: HttpException) {
                     println(e)
                     Response().apply { resultCode = ResponseStatusCode.Error }

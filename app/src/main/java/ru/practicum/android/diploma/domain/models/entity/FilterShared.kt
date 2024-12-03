@@ -11,3 +11,14 @@ data class FilterShared(
     val onlySalaryFlag: Boolean?,
     val apply: Boolean?
 )
+
+fun FilterShared?.isNotEmptyCheck(): Boolean {
+    return this?.countryName != null ||
+        this?.countryId != null ||
+        this?.regionName != null ||
+        this?.regionId != null ||
+        this?.industryName != null ||
+        this?.industryId != null ||
+        this?.salary != null ||
+        this?.onlySalaryFlag != null
+}

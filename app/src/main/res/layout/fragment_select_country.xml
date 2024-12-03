@@ -85,4 +85,52 @@
             android:text="@string/cant_get_cities_list" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/no_internet_lay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/error_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/no_internet"
+            android:src="@drawable/no_internet_placeholder" />
+
+        <TextView
+            android:id="@+id/error_tv"
+            style="@style/textSize22"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:text="@string/no_internet" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/preview">
+
+        <ProgressBar
+            style="@style/progressBar"
+            android:elevation="0.1dp"
+            app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+            app:layout_constraintLeft_toLeftOf="@+id/leftBorder"
+            app:layout_constraintRight_toRightOf="@+id/rightBorder"
+            app:layout_constraintTop_toTopOf="@+id/progressBar" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.query
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.filter.FilterInteractor
@@ -52,10 +53,6 @@ class SearchJobViewModel(
         loadVacancies()
     }
 
-    init {
-        getFilter()
-    }
-
     fun clearVacancies() {
         pushVacanciesState(VacanciesState.Start)
         currentPage = 0
@@ -69,6 +66,7 @@ class SearchJobViewModel(
     // эта ф-ия берет запрос из EditText и запрашивает данные с сервека через hhInteractor
     private fun searchVacancies(query: String) {
         if (currentQuery != query) {
+            println("current: $currentQuery, query: $query")
             currentPage = 0
             maxPage = 0
             isLastPage = false
@@ -83,12 +81,10 @@ class SearchJobViewModel(
     }
 
     private fun loadVacancies() {
-        isLoading = true
-        val params = createParams()
-        if (currentPage == 0) {
+        if (currentQuery.trim().isNotEmpty()) {
+            isLoading = true
+            val params = createParams()
             pushVacanciesState(VacanciesState.Loading)
-        }
-        if (currentQuery.isNotEmpty()) {
             viewModelScope.launch {
                 isLoading = true
                 try {
@@ -104,15 +100,15 @@ class SearchJobViewModel(
         }
     }
 
-    fun searchDebounce(changedText: String?) {
-        if (changedText != null) {
-            searchDebounce.invoke(changedText)
+    fun searchDebounced(changedText: String) {
+        if (changedText != currentQuery) {
+            searchDebounce(changedText)
         }
     }
 
     // Ф-ия для Fragment для загрузки следующей страницы
     fun loadNextPage() {
-        if (!isLoading && !isLastPage && currentQuery.isNotBlank()) {
+        if (!isLoading && !isLastPage && currentQuery.isNotEmpty()) {
             isLoading = true
             loadPerPageDebounce(currentPage)
         }
@@ -124,13 +120,10 @@ class SearchJobViewModel(
             "page" to currentPage.toString(),
             "per_page" to PAGE_SIZE.toString()
         ).apply {
-            val salary = _savedFilter.value?.salary ?: "0"
-            if (_savedFilter.value?.apply == true) {
-                _savedFilter.value?.regionId?.let { put("area", it) }
-                _savedFilter.value?.industryId?.let { put("industry", it) }
-                _savedFilter.value?.salary?.let { put("salary", salary) }
-                _savedFilter.value?.onlySalaryFlag?.let { put("only_with_salary", it.toString()) }
-            }
+            _savedFilter.value?.regionId?.let { put("area", it) }
+            _savedFilter.value?.industryId?.let { put("industry", it) }
+            _savedFilter.value?.salary?.let { put("salary", it) }
+            _savedFilter.value?.onlySalaryFlag?.let { put("only_with_salary", it.toString()) }
         }
     }
 
@@ -177,7 +170,18 @@ class SearchJobViewModel(
 
     fun getFilter() {
         viewModelScope.launch {
-            _savedFilter.value = filterInteractor.getFilter()
+            val filter = filterInteractor.getFilter()
+            _savedFilter.value = filter
+            if (filter?.apply == true) {
+                pushVacanciesState(VacanciesState.Start)
+                currentPage = 0
+                maxPage = 0
+                isLastPage = false
+                isLoading = false
+                vacanciesList.clear()
+                loadVacancies()
+                filterInteractor.saveFilter(filter.copy(apply = null))
+            }
         }
     }
 

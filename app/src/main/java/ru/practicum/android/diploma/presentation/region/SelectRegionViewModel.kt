@@ -12,24 +12,28 @@ import ru.practicum.android.diploma.ui.region.model.SelectRegionFragmentState
 class SelectRegionViewModel(
     private val filterInteractor: FilterInteractor
 ) : ViewModel() {
-
+    private var firstStart = true
     private val _state = MutableLiveData<SelectRegionFragmentState>()
     val state: LiveData<SelectRegionFragmentState> = _state
     private var filterShared: FilterShared? = null
-        set(value) {
-            pushState(
-                SelectRegionFragmentState.Content(
-                    value?.countryName,
-                    value?.regionName,
-                    value?.countryId
-                )
-            )
-            field = value
-        }
 
     fun getFilter() {
         viewModelScope.launch {
-            filterShared = filterInteractor.getFilter()
+            if (firstStart) {
+                firstStart = false
+                filterShared = filterInteractor.getFilter()
+                filterInteractor.saveTempFilter(filterShared)
+            } else {
+                firstStart = false
+                filterShared = filterInteractor.getTempFilter()
+            }
+            pushState(
+                SelectRegionFragmentState.Content(
+                    filterShared?.countryName,
+                    filterShared?.regionName,
+                    filterShared?.countryId
+                )
+            )
         }
     }
 
@@ -37,7 +41,18 @@ class SelectRegionViewModel(
         filterShared = filterShared?.copy(
             countryName = null,
             countryId = null,
-            apply = null
+            regionId = null,
+            regionName = null,
+        )
+        viewModelScope.launch {
+            filterInteractor.saveTempFilter(filterShared)
+        }
+        pushState(
+            SelectRegionFragmentState.Content(
+                filterShared?.countryName,
+                filterShared?.regionName,
+                filterShared?.countryId
+            )
         )
     }
 
@@ -47,11 +62,21 @@ class SelectRegionViewModel(
             regionName = null,
             apply = null
         )
+        viewModelScope.launch {
+            filterInteractor.saveTempFilter(filterShared)
+        }
+        pushState(
+            SelectRegionFragmentState.Content(
+                filterShared?.countryName,
+                filterShared?.regionName,
+                filterShared?.countryId
+            )
+        )
     }
 
     fun saveExit() {
         viewModelScope.launch {
-            filterInteractor.saveFilter(filterShared?.copy(apply = true))
+            filterInteractor.saveFilter(filterShared)
             pushState(SelectRegionFragmentState.Exit)
         }
     }

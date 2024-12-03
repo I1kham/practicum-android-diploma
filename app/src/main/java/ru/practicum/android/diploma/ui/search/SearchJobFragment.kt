@@ -19,6 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchJobBinding
 import ru.practicum.android.diploma.domain.models.entity.Vacancy
+import ru.practicum.android.diploma.domain.models.entity.isNotEmptyCheck
 import ru.practicum.android.diploma.presentation.card.vacancy.VacancyAdapter
 import ru.practicum.android.diploma.presentation.search.SearchJobViewModel
 import ru.practicum.android.diploma.ui.root.RootActivity.Companion.VACANCY_TRANSFER_KEY
@@ -77,8 +78,8 @@ class SearchJobFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updateSearchIcon(s.isNullOrEmpty())
-                if (!s.isNullOrBlank()) {
-                    viewModel.searchDebounce(s.toString())
+                if (!s.isNullOrEmpty()) {
+                    viewModel.searchDebounced(s.toString().trim())
                 }
             }
 
@@ -86,7 +87,6 @@ class SearchJobFragment : Fragment() {
                 if (s?.isEmpty() == true) {
                     viewModel.clearVacancies()
                 }
-                binding.searchLayout.isVisible = s.isNullOrEmpty()
             }
         })
 
@@ -114,7 +114,6 @@ class SearchJobFragment : Fragment() {
                         val itemsCount = vacancyAdapter.itemCount
                         if (pos >= itemsCount - 1) {
                             viewModel.loadNextPage()
-                            binding.bottomProgressBar.isVisible = true
                         }
                     }
                 }
@@ -133,35 +132,34 @@ class SearchJobFragment : Fragment() {
                         binding.bottomProgressBar.isVisible = true
                     } else {
                         showTopProgressBar()
+                        binding.messageChip.isVisible = false
                     }
                     keyBoardVisibility(false)
-                    binding.messageChip.isVisible = false
                 }
 
                 is VacanciesState.Error -> {
-                    hideCentralProgressBar()
+                    hideProgressBar()
                     showError(state.responseState)
                     keyBoardVisibility(false)
                 }
 
                 is VacanciesState.Success -> {
-                    hideCentralProgressBar()
+                    hideProgressBar()
                     updateRecyclerView(state.vacancies)
                     keyBoardVisibility(false)
-                    binding.bottomProgressBar.isVisible = false
                     binding.messageChip.isVisible = true
-                    state.totalCount?.let {
+                    state.totalCount?.let { count ->
                         binding.messageChip.text =
-                            context?.resources?.getQuantityString(
+                            requireContext().resources.getQuantityString(
                                 R.plurals.plurals_vacancies,
-                                state.totalCount,
-                                state.totalCount
+                                count,
+                                count
                             )
                     }
                 }
 
                 VacanciesState.Empty -> {
-                    hideCentralProgressBar()
+                    hideProgressBar()
                     showEmptyState()
                     keyBoardVisibility(false)
                     binding.messageChip.isVisible = true
@@ -177,13 +175,14 @@ class SearchJobFragment : Fragment() {
 
         viewModel.savedFilter.observe(viewLifecycleOwner) { filter ->
             binding.filterImageButton.setImageResource(
-                if (filter?.apply == true) R.drawable.filter_on__24px else R.drawable.filter_off__24px
+                if (filter.isNotEmptyCheck()) R.drawable.filter_on__24px else R.drawable.filter_off__24px
             )
         }
     }
 
     private fun clearRecyclerView() {
         updateRecyclerView(emptyList())
+        binding.vacanciesRecyclerView.isVisible = false
         showHiddenState()
     }
 
@@ -207,8 +206,10 @@ class SearchJobFragment : Fragment() {
         binding.vacanciesRecyclerView.visibility = View.GONE
     }
 
-    private fun hideCentralProgressBar() {
+    private fun hideProgressBar() {
         binding.progressBar.visibility = View.GONE
+        binding.bottomProgressBar.isVisible = false
+
     }
 
     private fun showError(responseState: ResponseStatusCode?) {
@@ -285,7 +286,6 @@ class SearchJobFragment : Fragment() {
             true -> inputMethodManager?.showSoftInput(binding.searchEditText, 0)
             else -> inputMethodManager?.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
         }
-
     }
 
     override fun onDestroyView() {

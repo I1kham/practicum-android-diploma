@@ -9,9 +9,12 @@ import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.filter.FilterInteractor
 import ru.practicum.android.diploma.domain.api.hh.HhInteractor
-import ru.practicum.android.diploma.domain.models.entity.Country
+import ru.practicum.android.diploma.domain.models.entity.Area
 import ru.practicum.android.diploma.domain.models.entity.FilterShared
 import ru.practicum.android.diploma.ui.country.model.CountrySelectState
+import ru.practicum.android.diploma.ui.root.RootActivity.Companion.NOT_DESIRED_AREA_KEY
+import ru.practicum.android.diploma.util.Resource
+import ru.practicum.android.diploma.util.ResponseStatusCode
 import java.net.SocketTimeoutException
 
 class SelectCountryViewModel(
@@ -21,52 +24,63 @@ class SelectCountryViewModel(
     ViewModel() {
     private val _countrySelectState = MutableLiveData<CountrySelectState>()
     val countrySelectState: LiveData<CountrySelectState> = _countrySelectState
-    private var countriesList: MutableList<Country> = mutableListOf()
+    private var countriesList: MutableList<Area> = mutableListOf()
     private var filterShared: FilterShared? = null
 
     init {
         getCountries()
+        viewModelScope.launch {
+            filterShared = filterInteractor.getTempFilter()
+        }
     }
 
-    fun chooseCountry() = { country: Country ->
+    fun chooseCountry() = { country: Area ->
         saveToFilter(country)
         renderState(CountrySelectState.Exit)
     }
 
-    private fun saveToFilter(country: Country) {
+    private fun saveToFilter(country: Area) {
         viewModelScope.launch {
-            filterShared?.let { filterShared ->
-                filterInteractor.saveFilter(
-                    filterShared.copy(
-                        countryId = country.id,
-                        countryName = country.name,
-                    )
-                )
-            } ?: filterInteractor.saveFilter(
+            filterInteractor.saveTempFilter(
                 FilterShared(
                     countryId = country.id,
                     countryName = country.name,
                     regionId = null,
                     regionName = null,
-                    industryName = null,
-                    industryId = null,
-                    salary = null,
-                    onlySalaryFlag = false,
+                    industryName = filterShared?.industryName,
+                    industryId = filterShared?.industryId,
+                    salary = filterShared?.salary,
+                    onlySalaryFlag = filterShared?.onlySalaryFlag,
                     apply = null
                 )
             )
-            renderState(CountrySelectState.Exit)
         }
     }
 
     private fun getCountries() {
         viewModelScope.launch {
+            renderState(CountrySelectState.Loading)
             try {
                 hhInteractor.searchCountries().collect { resource ->
-                    resource.data?.let { listCountries ->
-                        countriesList.addAll(listCountries)
-                        renderState(CountrySelectState.Success(listCountries))
-                    } ?: renderState(CountrySelectState.Error)
+                    when (resource) {
+                        is Resource.Error -> {
+                            if (resource.responseCode == ResponseStatusCode.NoInternet) {
+                                renderState(CountrySelectState.NoInternet)
+                            } else {
+                                renderState(CountrySelectState.Error)
+                            }
+                        }
+
+                        is Resource.Success -> {
+                            if (resource.data.isNullOrEmpty()) {
+                                renderState(CountrySelectState.Empty)
+                            } else {
+                                val sortedCountryList = resource.data.sortedBy { it.id == NOT_DESIRED_AREA_KEY }
+                                countriesList.addAll(sortedCountryList)
+                                renderState(CountrySelectState.Success(sortedCountryList))
+                            }
+                        }
+                    }
                 }
             } catch (e: SocketTimeoutException) {
                 Log.e("SocketTimeoutException", "Timeout error occured", e)

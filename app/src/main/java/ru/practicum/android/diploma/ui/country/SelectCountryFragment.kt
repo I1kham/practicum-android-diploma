@@ -9,8 +9,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.databinding.FragmentSelectCountryBinding
-import ru.practicum.android.diploma.domain.models.entity.Country
-import ru.practicum.android.diploma.presentation.card.country.CountryAdapter
+import ru.practicum.android.diploma.domain.models.entity.Area
+import ru.practicum.android.diploma.presentation.card.text.TextCardAdapter
 import ru.practicum.android.diploma.presentation.country.SelectCountryViewModel
 import ru.practicum.android.diploma.ui.country.model.CountrySelectState
 import ru.practicum.android.diploma.ui.root.RootActivity
@@ -19,8 +19,8 @@ class SelectCountryFragment : Fragment() {
     private val viewModel: SelectCountryViewModel by viewModel()
     private var _binding: FragmentSelectCountryBinding? = null
     private val binding get() = _binding!!
-    private val countryAdapter = CountryAdapter()
-    private var onItemClick: ((Country) -> Unit)? = null
+    private val countryAdapter = TextCardAdapter()
+    private var onItemClick: ((Area) -> Unit)? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,7 +37,14 @@ class SelectCountryFragment : Fragment() {
         observeViewModel()
         onItemClick = viewModel.chooseCountry()
         initRecyclerView()
+        prepareBackButton()
+    }
+
+    private fun prepareBackButton() {
         binding.backBtn.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.preview.setOnClickListener {
             findNavController().popBackStack()
         }
     }
@@ -48,19 +55,37 @@ class SelectCountryFragment : Fragment() {
                 is CountrySelectState.Success -> {
                     updateRecyclerView(state.countries)
                     binding.errorLayout.isVisible = false
+                    binding.progressBar.isVisible = false
+                    binding.noInternetLay.isVisible = false
                 }
 
                 CountrySelectState.Empty -> {
                     updateRecyclerView(emptyList())
                     binding.errorLayout.isVisible = true
+                    binding.progressBar.isVisible = false
+                    binding.noInternetLay.isVisible = false
                 }
 
                 is CountrySelectState.Error -> {
                     binding.errorLayout.isVisible = true
+                    binding.progressBar.isVisible = false
+                    binding.noInternetLay.isVisible = false
                 }
 
                 CountrySelectState.Exit -> {
                     findNavController().popBackStack()
+                }
+
+                CountrySelectState.NoInternet -> {
+                    binding.errorLayout.isVisible = false
+                    binding.noInternetLay.isVisible = true
+                    binding.progressBar.isVisible = false
+                }
+
+                CountrySelectState.Loading -> {
+                    binding.errorLayout.isVisible = false
+                    binding.progressBar.isVisible = true
+                    binding.noInternetLay.isVisible = false
                 }
             }
         }
@@ -79,7 +104,7 @@ class SelectCountryFragment : Fragment() {
         }
     }
 
-    private fun updateRecyclerView(countries: List<Country>) {
+    private fun updateRecyclerView(countries: List<Area>) {
         binding.recycleView.isVisible = true
         countryAdapter.submitList(countries)
         onItemClick?.let { countryAdapter.onItemClick = it }

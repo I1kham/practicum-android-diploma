@@ -42,11 +42,11 @@
 
     <plurals name="plurals_vacancies">
         <item quantity="zero">Найдено %1$d вакансий</item>
-        <item quantity="one">Найдено %1$d вакансия</item>
+        <item quantity="one">Найдена %1$d вакансия</item>
         <item quantity="two">Найдено %1$d вакансии</item>
-        <item quantity="few">Найдено %1$d вакансии</item>
+        <item quantity="few">Найдено %1$d вакансий</item>
         <item quantity="many">Найдено %1$d вакансий</item>
-        <item quantity="other">Найдено %1$d other</item>
+        <item quantity="other">Найдено %1$d вакансий</item>s
     </plurals>
 
     <string name="industry_selection">Выбор отрасли</string>
@@ -61,4 +61,7 @@
     <string name="apply">Применить</string>
     <string name="reset">Сбросить</string>
     <string name="cant_get_cities_list">Не удалось получить список</string>
+    <string name="other_regions">Другие регионы</string>
+    <string name="work_place_mask">%1$s%2$s</string>
+    <string name="job_item_title_mask">%1$s, %2$s</string>
 </resources>

@@ -12,6 +12,8 @@ import ru.practicum.android.diploma.domain.api.filter.FilterInteractor
 import ru.practicum.android.diploma.domain.models.entity.Area
 import ru.practicum.android.diploma.domain.models.entity.FilterShared
 import ru.practicum.android.diploma.ui.city.model.CitySelectState
+import ru.practicum.android.diploma.util.Resource
+import ru.practicum.android.diploma.util.ResponseStatusCode
 import ru.practicum.android.diploma.util.debounce
 import java.net.SocketTimeoutException
 
@@ -31,12 +33,16 @@ class CitySelectViewModel(
         filterRegions(filterText)
     }
 
-    fun getAreas(countryId: String?) {
+    fun getAreas() {
         viewModelScope.launch {
-            filterShared = filterInteractor.getFilter()
-            countryId?.let {
-                getCitiesById(it)
-            } ?: getAllAreas()
+            pushState(CitySelectState.Loading)
+            filterShared = filterInteractor.getTempFilter()
+            val filterCountryId = filterShared?.countryId
+            if (filterCountryId != null) {
+                getCitiesById(filterCountryId)
+            } else {
+                getAllAreas()
+            }
         }
     }
 
@@ -47,7 +53,7 @@ class CitySelectViewModel(
     private fun saveToFilter(area: Area) {
         // что то, что сохранит в фильтр данные
         viewModelScope.launch {
-            filterInteractor.saveFilter(
+            filterInteractor.saveTempFilter(
                 FilterShared(
                     countryId = area.parentId ?: filterShared?.countryId,
                     countryName = area.parentName ?: filterShared?.countryName,
@@ -68,14 +74,31 @@ class CitySelectViewModel(
         viewModelScope.launch {
             try {
                 citySelectInteractor.getCitiesByAreaId(id).collect { resource ->
-                    resource?.data?.let { listAreas ->
-                        if (listAreas.isEmpty()) {
-                            pushState(CitySelectState.Error)
-                        } else {
-                            areasList.addAll(listAreas)
-                            pushState(CitySelectState.Content(listAreas))
+                    when (resource) {
+                        is Resource.Error -> {
+                            if (resource.responseCode == ResponseStatusCode.NoInternet) {
+                                pushState(CitySelectState.NoInternet)
+
+                            } else {
+                                pushState(CitySelectState.Error)
+                            }
                         }
-                    } ?: pushState(CitySelectState.Error)
+
+                        is Resource.Success -> {
+                            if (resource.data.isNullOrEmpty()) {
+                                pushState(CitySelectState.Empty)
+                            } else {
+                                areasList.addAll(resource.data)
+                                pushState(CitySelectState.Content(areasList.sortedBy { area: Area ->
+                                    area.id
+                                }))
+                            }
+                        }
+
+                        else -> {
+                            pushState(CitySelectState.Error)
+                        }
+                    }
                 }
             } catch (e: SocketTimeoutException) {
                 this.coroutineContext.job.cancel()
@@ -89,14 +112,33 @@ class CitySelectViewModel(
         viewModelScope.launch {
             try {
                 citySelectInteractor.getAllArea().collect { resource ->
-                    resource?.data?.let { listAreas ->
-                        if (listAreas.isEmpty()) {
-                            pushState(CitySelectState.Empty)
-                        } else {
-                            areasList.addAll(listAreas)
-                            pushState(CitySelectState.Content(listAreas))
+                    when (resource) {
+                        is Resource.Error -> {
+                            if (resource.responseCode == ResponseStatusCode.NoInternet) {
+                                pushState(CitySelectState.NoInternet)
+
+                            } else {
+                                pushState(CitySelectState.Error)
+                            }
                         }
-                    } ?: pushState(CitySelectState.Error)
+
+                        is Resource.Success -> {
+                            if (resource.data.isNullOrEmpty()) {
+                                pushState(CitySelectState.Empty)
+                            } else {
+                                areasList.addAll(resource.data)
+                                pushState(
+                                    CitySelectState.Content(areasList.sortedBy { area: Area ->
+                                        area.id
+                                    })
+                                )
+                            }
+                        }
+
+                        else -> {
+                            pushState(CitySelectState.Error)
+                        }
+                    }
                 }
             } catch (e: SocketTimeoutException) {
                 this.coroutineContext.job.cancel()
@@ -129,7 +171,9 @@ class CitySelectViewModel(
             )
         } else {
             pushState(
-                CitySelectState.Content(filteredRegions)
+                CitySelectState.Content(filteredRegions.sortedBy { area: Area ->
+                    area.id
+                })
             )
         }
     }

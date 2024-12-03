@@ -26,7 +26,8 @@ class CitySelectRepositoryImpl(
                     Resource.Success(
                         (response as CityResponse).areas.map { areaData ->
                             areaData.map()
-                        }
+                        },
+                        responseCode = ResponseStatusCode.Ok
                     )
                 )
             }

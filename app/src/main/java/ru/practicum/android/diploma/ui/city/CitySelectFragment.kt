@@ -20,7 +20,6 @@ import ru.practicum.android.diploma.presentation.card.text.TextCardAdapter
 import ru.practicum.android.diploma.presentation.city.CitySelectViewModel
 import ru.practicum.android.diploma.ui.city.model.CitySelectState
 import ru.practicum.android.diploma.ui.root.RootActivity
-import ru.practicum.android.diploma.ui.root.RootActivity.Companion.COUNTRY_TRANSFER_KEY
 
 class CitySelectFragment : Fragment() {
     private val viewModel: CitySelectViewModel by viewModel()
@@ -45,13 +44,20 @@ class CitySelectFragment : Fragment() {
         observeVieModel()
         onItemClick = viewModel.chooseArea()
         initRecyclerView()
+        prepareBackButton()
+    }
+
+    private fun prepareBackButton() {
         binding.preview.setOnClickListener {
+            findNavController().popBackStack()
+        }
+        binding.arrow.setOnClickListener {
             findNavController().popBackStack()
         }
     }
 
     private fun getAreas() {
-        viewModel.getAreas(arguments?.getString(COUNTRY_TRANSFER_KEY))
+        viewModel.getAreas()
     }
 
     private fun observeVieModel() {
@@ -61,22 +67,40 @@ class CitySelectFragment : Fragment() {
                     updateRecyclerView(state.cities)
                     binding.noCityLayout.isVisible = false
                     binding.errorLayout.isVisible = false
+                    binding.noInternetLay.isVisible = false
                     keyBoardVisibility(false)
+                    binding.progressBar.isVisible = false
                 }
 
                 CitySelectState.Empty -> {
                     updateRecyclerView(emptyList())
                     binding.noCityLayout.isVisible = true
                     keyBoardVisibility(false)
+                    binding.progressBar.isVisible = false
                 }
 
                 CitySelectState.Error -> {
                     binding.errorLayout.isVisible = true
                     keyBoardVisibility(false)
+                    binding.progressBar.isVisible = false
                 }
 
                 CitySelectState.Exit -> {
                     findNavController().popBackStack()
+                }
+
+                CitySelectState.NoInternet -> {
+                    binding.noInternetLay.isVisible = true
+                    keyBoardVisibility(false)
+                    binding.progressBar.isVisible = false
+                }
+
+                CitySelectState.Loading -> {
+                    binding.noCityLayout.isVisible = false
+                    binding.errorLayout.isVisible = false
+                    binding.noInternetLay.isVisible = false
+                    keyBoardVisibility(false)
+                    binding.progressBar.isVisible = true
                 }
             }
         }

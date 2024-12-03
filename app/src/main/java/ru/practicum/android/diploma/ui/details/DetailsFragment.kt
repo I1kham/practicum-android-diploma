@@ -85,12 +85,17 @@ class DetailsFragment : Fragment() {
             is DetailsFragmentState.Content -> {
                 showContent(state.vacancy)
                 this.binding.errorServer.isVisible = false
-                this.binding.errorLayout.isVisible = false
+                this.binding.errorLayoutEmpty.isVisible = false
             }
 
-            is DetailsFragmentState.ERROR -> {
+            is DetailsFragmentState.Error -> {
                 progressBarVisible(false)
                 renderError(state.errState)
+            }
+
+            DetailsFragmentState.Empty -> {
+                this.binding.errorLayoutEmpty.isVisible = true
+                this.binding.content.isVisible = false
             }
         }
     }
@@ -108,7 +113,7 @@ class DetailsFragment : Fragment() {
             }
 
             ResponseStatusCode.Ok -> {
-                this.binding.errorLayout.isVisible = true
+                this.binding.errorLayoutEmpty.isVisible = true
                 this.binding.content.isVisible = false
             }
 

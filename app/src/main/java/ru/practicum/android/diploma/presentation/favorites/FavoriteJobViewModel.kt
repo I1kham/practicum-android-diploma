@@ -31,7 +31,7 @@ class FavoriteJobViewModel(
                     )
                 } // обработка ошибок
                 .collect { vacancies ->
-                    showData(vacancies)
+                    showData(vacancies.reversed())
                 }
         }
     }

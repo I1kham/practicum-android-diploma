@@ -13,13 +13,9 @@ sealed interface IndustryFragmentState {
 
     data object Empty : IndustryFragmentState
 
-    data class Filter(
-        val listIndastries: List<IndustryNested>,
-        val checkedIndustry: IndustryNested?
-    ) :
-        IndustryFragmentState
-
     data object Exit : IndustryFragmentState
 
     data object Loading : IndustryFragmentState
+
+    data object NoInternet : IndustryFragmentState
 }

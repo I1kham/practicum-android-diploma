@@ -51,7 +51,12 @@ class IndustryFragment : Fragment() {
 
     private fun setupUI() {
         binding.back.setOnClickListener {
-            viewModel.saveFilter()
+            findNavController().popBackStack()
+            // viewModel.saveFilter() // в части изменения логики экрана надо будет поправить
+        }
+
+        binding.backBtn.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         binding.clearSearchButton.setOnClickListener {
@@ -70,19 +75,22 @@ class IndustryFragment : Fragment() {
                     findNavController().popBackStack()
                 }
 
-                is IndustryFragmentState.Filter -> {
-                    if (state.listIndastries.isEmpty()) {
-                        showEmptyPlaceholder()
-                    } else {
-                        showIndustryFilter(state.listIndastries, state.checkedIndustry)
-                    }
-                }
-
                 IndustryFragmentState.Empty -> showEmptyPlaceholder()
                 IndustryFragmentState.Error -> showErrorPlaceholder()
                 IndustryFragmentState.Loading -> showLoading()
+                IndustryFragmentState.NoInternet -> showNoInternet()
+
             }
         }
+    }
+
+    private fun showNoInternet() {
+        binding.emptyLayout.visibility = View.GONE
+        binding.errorLayout.visibility = View.GONE
+        binding.loadingLayout.visibility = View.GONE
+        binding.contentLayout.visibility = View.GONE
+        binding.noInternetLay.visibility = View.VISIBLE
+        keyBoardVisibility(false)
     }
 
     private fun showEmptyPlaceholder() {
@@ -90,6 +98,8 @@ class IndustryFragment : Fragment() {
         binding.errorLayout.visibility = View.GONE
         binding.loadingLayout.visibility = View.GONE
         binding.contentLayout.visibility = View.GONE
+        binding.noInternetLay.visibility = View.GONE
+        keyBoardVisibility(false)
     }
 
     private fun showErrorPlaceholder() {
@@ -97,6 +107,8 @@ class IndustryFragment : Fragment() {
         binding.emptyLayout.visibility = View.GONE
         binding.loadingLayout.visibility = View.GONE
         binding.contentLayout.visibility = View.GONE
+        binding.noInternetLay.visibility = View.GONE
+        keyBoardVisibility(false)
     }
 
     private fun showLoading() {
@@ -104,6 +116,8 @@ class IndustryFragment : Fragment() {
         binding.errorLayout.visibility = View.GONE
         binding.emptyLayout.visibility = View.GONE
         binding.contentLayout.visibility = View.GONE
+        binding.noInternetLay.visibility = View.GONE
+        keyBoardVisibility(false)
     }
 
     private fun showContent(industries: List<IndustryNested>, checkedIndustry: IndustryNested?) {
@@ -111,24 +125,12 @@ class IndustryFragment : Fragment() {
         binding.errorLayout.visibility = View.GONE
         binding.emptyLayout.visibility = View.GONE
         binding.loadingLayout.visibility = View.GONE
+        binding.noInternetLay.visibility = View.GONE
         updateRadioGroup(
             industries,
             checkedIndustry
         )
-        if (binding.filterEditText.text.toString() != checkedIndustry?.name) {
-            binding.filterEditText.setText(checkedIndustry?.name)
-        }
-    }
-
-    private fun showIndustryFilter(industries: List<IndustryNested>, checkedIndustry: IndustryNested?) {
-        binding.contentLayout.visibility = View.VISIBLE
-        binding.errorLayout.visibility = View.GONE
-        binding.emptyLayout.visibility = View.GONE
-        binding.loadingLayout.visibility = View.GONE
-        updateRadioGroup(
-            industries,
-            checkedIndustry
-        )
+        keyBoardVisibility(false)
     }
 
     private fun setupSearchFilter() {
@@ -138,12 +140,11 @@ class IndustryFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.filterIndustries(s?.toString() ?: "")
+                viewModel.filterDebounce(s?.toString() ?: "")
             }
 
             override fun afterTextChanged(s: Editable?) {
                 updateSearchIcon(s.isNullOrBlank())
-                keyBoardVisibility(!s.isNullOrBlank())
             }
         })
         binding.clearSearchButton.setOnClickListener {
@@ -171,7 +172,6 @@ class IndustryFragment : Fragment() {
         Log.d("updateRadioGroup", checkedIndustry.toString())
         // Список для хранения всех CustomRadioLayout
         val radioLayouts = mutableListOf<CustomRadioLayout>()
-
         industries.forEach { industry ->
             val customRadioLayout = CustomRadioLayout(requireContext()).apply {
                 bind(industry)
