@@ -30,7 +30,8 @@ class SearchJobFragment : Fragment() {
     private var _binding: FragmentSearchJobBinding? = null
     private val binding get() = _binding!!
     private val viewModel: SearchJobViewModel by viewModel()
-    private val vacancyAdapter = VacancyAdapter()
+
+    // private val vacancyAdapter = VacancyAdapter()
     private var scrollListener: RecyclerView.OnScrollListener? = null
     private var onItemClick: ((Vacancy) -> Unit)? = null
 
@@ -101,7 +102,6 @@ class SearchJobFragment : Fragment() {
     private fun initRecyclerView() {
         binding.vacanciesRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = vacancyAdapter
 
             scrollListener?.let { removeOnScrollListener(it) }
             scrollListener = object : RecyclerView.OnScrollListener() {
@@ -111,7 +111,7 @@ class SearchJobFragment : Fragment() {
                         val pos =
                             (binding.vacanciesRecyclerView.layoutManager as LinearLayoutManager)
                                 .findLastVisibleItemPosition()
-                        val itemsCount = vacancyAdapter.itemCount
+                        val itemsCount = adapter?.itemCount ?: 0
                         if (pos >= itemsCount - 1) {
                             viewModel.loadNextPage()
                         }
@@ -133,10 +133,6 @@ class SearchJobFragment : Fragment() {
                         binding.bottomProgressBar.isVisible = true
                     } else {
                         binding.vacanciesRecyclerView.visibility = View.GONE
-                        vacancyAdapter.run {
-                            submitList(null)
-                            notifyDataSetChanged()
-                        }
                         showTopProgressBar()
                         binding.messageChip.isVisible = false
                     }
@@ -267,10 +263,11 @@ class SearchJobFragment : Fragment() {
         binding.noJobsLayout.visibility = View.GONE
         binding.searchLayout.visibility = View.GONE
         binding.errorLayout.visibility = View.GONE
-        vacancyAdapter.submitList(vacancies)
+        val vacancyAdapter = VacancyAdapter(vacancies)
         onItemClick?.let {
             vacancyAdapter.onItemClick = it
         }
+        binding.vacanciesRecyclerView.adapter = vacancyAdapter
     }
 
     private fun showNoInternetToast() {

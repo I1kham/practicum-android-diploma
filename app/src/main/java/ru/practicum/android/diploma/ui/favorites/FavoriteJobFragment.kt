@@ -22,7 +22,7 @@ class FavoriteJobFragment : Fragment() {
     private var _binding: FragmentFavoriteJobBinding? = null
     private val binding get() = _binding!!
     private val viewModel: FavoriteJobViewModel by viewModel()
-    private var vacancyAdapter: VacancyAdapter? = null
+//    private var vacancyAdapter: VacancyAdapter? = null
     private var onItemClick: ((Vacancy) -> Unit)? = null
 
     override fun onCreateView(
@@ -46,12 +46,12 @@ class FavoriteJobFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        vacancyAdapter = null
+       // vacancyAdapter = null
         binding.favoritesRv.adapter = null
     }
 
     private fun initAdapter() {
-        vacancyAdapter = VacancyAdapter()
+       val vacancyAdapter = VacancyAdapter(emptyList())
         binding.favoritesRv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.favoritesRv.adapter = vacancyAdapter
     }
@@ -77,10 +77,11 @@ class FavoriteJobFragment : Fragment() {
         binding.progressBar.visibility = View.GONE
         binding.favoritesListPlaceholder.visibility = View.GONE
         binding.favoritesRv.visibility = View.VISIBLE
-        vacancyAdapter?.submitList(favoriteList)
+       val  vacancyAdapter = VacancyAdapter(favoriteList)
         onItemClick?.let {
-            vacancyAdapter?.onItemClick = it
+            vacancyAdapter.onItemClick = it
         }
+        binding.favoritesRv.adapter = vacancyAdapter
     }
 
     private fun showLoading() {
