@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.query
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.filter.FilterInteractor
@@ -65,6 +66,7 @@ class SearchJobViewModel(
     // эта ф-ия берет запрос из EditText и запрашивает данные с сервека через hhInteractor
     private fun searchVacancies(query: String) {
         if (currentQuery != query) {
+            println("current: $currentQuery, query: $query")
             currentPage = 0
             maxPage = 0
             isLastPage = false
@@ -79,12 +81,10 @@ class SearchJobViewModel(
     }
 
     private fun loadVacancies() {
-        if (currentQuery.isNotBlank()) {
+        if (currentQuery.trim().isNotEmpty()) {
             isLoading = true
             val params = createParams()
-            if (currentPage == 0) {
-                pushVacanciesState(VacanciesState.Loading)
-            }
+            pushVacanciesState(VacanciesState.Loading)
             viewModelScope.launch {
                 isLoading = true
                 try {
@@ -100,15 +100,15 @@ class SearchJobViewModel(
         }
     }
 
-    fun searchDebounce(changedText: String?) {
-        if (changedText != null) {
-            searchDebounce.invoke(changedText)
+    fun searchDebounced(changedText: String) {
+        if (changedText != currentQuery) {
+            searchDebounce(changedText)
         }
     }
 
     // Ф-ия для Fragment для загрузки следующей страницы
     fun loadNextPage() {
-        if (!isLoading && !isLastPage && currentQuery.isNotBlank()) {
+        if (!isLoading && !isLastPage && currentQuery.isNotEmpty()) {
             isLoading = true
             loadPerPageDebounce(currentPage)
         }
@@ -173,6 +173,12 @@ class SearchJobViewModel(
             val filter = filterInteractor.getFilter()
             _savedFilter.value = filter
             if (filter?.apply == true) {
+                pushVacanciesState(VacanciesState.Start)
+                currentPage = 0
+                maxPage = 0
+                isLastPage = false
+                isLoading = false
+                vacanciesList.clear()
                 loadVacancies()
                 filterInteractor.saveFilter(filter.copy(apply = null))
             }

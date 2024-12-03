@@ -55,15 +55,21 @@ class SelectCountryFragment : Fragment() {
                 is CountrySelectState.Success -> {
                     updateRecyclerView(state.countries)
                     binding.errorLayout.isVisible = false
+                    binding.progressBar.isVisible = false
+                    binding.noInternetLay.isVisible = false
                 }
 
                 CountrySelectState.Empty -> {
                     updateRecyclerView(emptyList())
                     binding.errorLayout.isVisible = true
+                    binding.progressBar.isVisible = false
+                    binding.noInternetLay.isVisible = false
                 }
 
                 is CountrySelectState.Error -> {
                     binding.errorLayout.isVisible = true
+                    binding.progressBar.isVisible = false
+                    binding.noInternetLay.isVisible = false
                 }
 
                 CountrySelectState.Exit -> {
@@ -71,7 +77,15 @@ class SelectCountryFragment : Fragment() {
                 }
 
                 CountrySelectState.NoInternet -> {
+                    binding.errorLayout.isVisible = false
                     binding.noInternetLay.isVisible = true
+                    binding.progressBar.isVisible = false
+                }
+
+                CountrySelectState.Loading -> {
+                    binding.errorLayout.isVisible = false
+                    binding.progressBar.isVisible = true
+                    binding.noInternetLay.isVisible = false
                 }
             }
         }

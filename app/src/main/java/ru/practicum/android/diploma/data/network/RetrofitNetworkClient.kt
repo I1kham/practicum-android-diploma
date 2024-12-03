@@ -13,6 +13,7 @@ import ru.practicum.android.diploma.data.dto.response.IndustriesResponse
 import ru.practicum.android.diploma.data.dto.response.Response
 import ru.practicum.android.diploma.data.dto.response.VacancyResponse
 import ru.practicum.android.diploma.data.dto.vacancy.AreaData
+import ru.practicum.android.diploma.ui.root.RootActivity.Companion.NOT_DESIRED_AREA_KEY
 import ru.practicum.android.diploma.util.ResponseStatusCode
 import ru.practicum.android.diploma.util.isNetworkAvailable
 
@@ -106,7 +107,7 @@ class RetrofitNetworkClient(
                     val list: MutableList<AreaData> = mutableListOf()
                     hhService.getAllArea().map { cityResponse ->
                         cityResponse.areas.map { areaData ->
-                            if (areaData.parentId != "1001") {
+                            if (areaData.parentId != NOT_DESIRED_AREA_KEY) {
                                 list.add(areaData.copy(parentName = cityResponse.name))
                             }
                         }
@@ -130,7 +131,6 @@ class RetrofitNetworkClient(
                     val response = hhService.searchCountries()
                     val list = mutableListOf<AreaData>()
                     response.map { response ->
-                        println(response)
                         list.add(
                             AreaData(
                                 id = response.id,

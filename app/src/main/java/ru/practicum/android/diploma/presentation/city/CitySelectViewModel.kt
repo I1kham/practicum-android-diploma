@@ -35,6 +35,7 @@ class CitySelectViewModel(
 
     fun getAreas() {
         viewModelScope.launch {
+            pushState(CitySelectState.Loading)
             filterShared = filterInteractor.getTempFilter()
             val filterCountryId = filterShared?.countryId
             if (filterCountryId != null) {
@@ -88,7 +89,9 @@ class CitySelectViewModel(
                                 pushState(CitySelectState.Empty)
                             } else {
                                 areasList.addAll(resource.data)
-                                pushState(CitySelectState.Content(areasList))
+                                pushState(CitySelectState.Content(areasList.sortedBy { area: Area ->
+                                    area.id
+                                }))
                             }
                         }
 
@@ -124,7 +127,11 @@ class CitySelectViewModel(
                                 pushState(CitySelectState.Empty)
                             } else {
                                 areasList.addAll(resource.data)
-                                pushState(CitySelectState.Content(areasList))
+                                pushState(
+                                    CitySelectState.Content(areasList.sortedBy { area: Area ->
+                                        area.id
+                                    })
+                                )
                             }
                         }
 
@@ -164,7 +171,9 @@ class CitySelectViewModel(
             )
         } else {
             pushState(
-                CitySelectState.Content(filteredRegions)
+                CitySelectState.Content(filteredRegions.sortedBy { area: Area ->
+                    area.id
+                })
             )
         }
     }

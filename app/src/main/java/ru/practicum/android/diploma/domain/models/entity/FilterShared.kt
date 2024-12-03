@@ -20,6 +20,5 @@ fun FilterShared?.isNotEmptyCheck(): Boolean {
         this?.industryName != null ||
         this?.industryId != null ||
         this?.salary != null ||
-        this?.onlySalaryFlag != null ||
-        this?.apply != null
+        this?.onlySalaryFlag != null
 }

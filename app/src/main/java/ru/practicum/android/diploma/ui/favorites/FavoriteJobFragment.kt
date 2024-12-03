@@ -36,10 +36,8 @@ class FavoriteJobFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        init()
+        initAdapter()
         prepareOnItemClick()
-
         viewModel.getVacancies()
         viewModel.favoritesState.observe(viewLifecycleOwner) { state ->
             render(state)
@@ -52,7 +50,7 @@ class FavoriteJobFragment : Fragment() {
         binding.favoritesRv.adapter = null
     }
 
-    private fun init() {
+    private fun initAdapter() {
         vacancyAdapter = VacancyAdapter()
         binding.favoritesRv.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         binding.favoritesRv.adapter = vacancyAdapter

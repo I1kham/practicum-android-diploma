@@ -12,6 +12,7 @@ import ru.practicum.android.diploma.domain.api.hh.HhInteractor
 import ru.practicum.android.diploma.domain.models.entity.Area
 import ru.practicum.android.diploma.domain.models.entity.FilterShared
 import ru.practicum.android.diploma.ui.country.model.CountrySelectState
+import ru.practicum.android.diploma.ui.root.RootActivity.Companion.NOT_DESIRED_AREA_KEY
 import ru.practicum.android.diploma.util.Resource
 import ru.practicum.android.diploma.util.ResponseStatusCode
 import java.net.SocketTimeoutException
@@ -28,6 +29,9 @@ class SelectCountryViewModel(
 
     init {
         getCountries()
+        viewModelScope.launch {
+            filterShared = filterInteractor.getTempFilter()
+        }
     }
 
     fun chooseCountry() = { country: Area ->
@@ -55,6 +59,7 @@ class SelectCountryViewModel(
 
     private fun getCountries() {
         viewModelScope.launch {
+            renderState(CountrySelectState.Loading)
             try {
                 hhInteractor.searchCountries().collect { resource ->
                     when (resource) {
@@ -70,12 +75,12 @@ class SelectCountryViewModel(
                             if (resource.data.isNullOrEmpty()) {
                                 renderState(CountrySelectState.Empty)
                             } else {
-                                countriesList.addAll(resource.data)
-                                renderState(CountrySelectState.Success(resource.data))
+                                val sortedCountryList = resource.data.sortedBy { it.id == NOT_DESIRED_AREA_KEY }
+                                countriesList.addAll(sortedCountryList)
+                                renderState(CountrySelectState.Success(sortedCountryList))
                             }
                         }
                     }
-
                 }
             } catch (e: SocketTimeoutException) {
                 Log.e("SocketTimeoutException", "Timeout error occured", e)

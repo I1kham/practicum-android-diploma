@@ -31,6 +31,8 @@
             style="@style/textSize22"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
             tools:text="Название" />
 
         <TextView
@@ -38,6 +40,8 @@
             style="@style/textSize16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
             tools:text="Описание" />
 
         <TextView

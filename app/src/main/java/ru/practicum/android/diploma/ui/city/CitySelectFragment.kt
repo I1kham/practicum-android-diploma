@@ -69,17 +69,20 @@ class CitySelectFragment : Fragment() {
                     binding.errorLayout.isVisible = false
                     binding.noInternetLay.isVisible = false
                     keyBoardVisibility(false)
+                    binding.progressBar.isVisible = false
                 }
 
                 CitySelectState.Empty -> {
                     updateRecyclerView(emptyList())
                     binding.noCityLayout.isVisible = true
                     keyBoardVisibility(false)
+                    binding.progressBar.isVisible = false
                 }
 
                 CitySelectState.Error -> {
                     binding.errorLayout.isVisible = true
                     keyBoardVisibility(false)
+                    binding.progressBar.isVisible = false
                 }
 
                 CitySelectState.Exit -> {
@@ -89,6 +92,15 @@ class CitySelectFragment : Fragment() {
                 CitySelectState.NoInternet -> {
                     binding.noInternetLay.isVisible = true
                     keyBoardVisibility(false)
+                    binding.progressBar.isVisible = false
+                }
+
+                CitySelectState.Loading -> {
+                    binding.noCityLayout.isVisible = false
+                    binding.errorLayout.isVisible = false
+                    binding.noInternetLay.isVisible = false
+                    keyBoardVisibility(false)
+                    binding.progressBar.isVisible = true
                 }
             }
         }

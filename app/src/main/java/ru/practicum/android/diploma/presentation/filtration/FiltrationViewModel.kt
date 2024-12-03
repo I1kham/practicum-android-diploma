@@ -52,6 +52,11 @@ class FiltrationViewModel(private val filterInteractor: FilterInteractor) : View
     }
 
     fun checkingOnlySalaryFlag(onlySalaryFlag: Boolean) {
+        val salary = if (!onlySalaryFlag) {
+            null
+        } else {
+            onlySalaryFlag
+        }
         filterShared = FilterShared(
             countryName = filterShared?.countryName,
             countryId = filterShared?.countryId,
@@ -60,7 +65,7 @@ class FiltrationViewModel(private val filterInteractor: FilterInteractor) : View
             industryName = filterShared?.industryName,
             industryId = filterShared?.industryId,
             salary = filterShared?.salary,
-            onlySalaryFlag = onlySalaryFlag,
+            onlySalaryFlag = salary,
             apply = null
         )
         _filterState.value = filterShared

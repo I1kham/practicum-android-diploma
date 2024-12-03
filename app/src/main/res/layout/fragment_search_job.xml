@@ -157,16 +157,15 @@
         android:id="@+id/message_chip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="?attr/colorPrimary"
         android:fontFamily="@font/ys_display_regular"
-        android:text="Текст"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:visibility="gone"
+        app:chipBackgroundColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_search_layout"
-        tools:ignore="HardcodedText" />
+        tools:text="Текст" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/vacancies_recycler_view"
