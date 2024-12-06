@@ -28,7 +28,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/error_layout"
+        android:id="@+id/error_layout_empty"
         style="@style/vacancyDetailErrLayout"
         android:layout_width="match_parent"
         android:visibility="gone"
@@ -199,9 +199,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="4dp"
-                android:ellipsize="end"
                 app:layout_constraintBottom_toTopOf="@id/title_salary"
-                app:layout_constraintRight_toLeftOf="@id/rightBorder"
+                app:layout_constraintEnd_toEndOf="@id/rightBorder"
                 app:layout_constraintStart_toStartOf="@id/leftBorder"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Android-разработчик" />
@@ -220,8 +219,9 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/card_view"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="24dp"
                 android:backgroundTint="@color/light_gray"
@@ -241,8 +241,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:cardCornerRadius="12dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/name_and_city_layout"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <ImageView
@@ -253,23 +253,25 @@
                     </androidx.cardview.widget.CardView>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
+                        android:id="@+id/name_and_city_layout"
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="8dp"
                         android:orientation="vertical"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintLeft_toRightOf="@+id/picture"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/picture"
                         app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:id="@+id/card_title_text"
                             style="@style/textSize22"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:ellipsize="end"
                             android:textColor="@color/black_universal"
                             app:layout_constraintBottom_toTopOf="@id/card_city_text"
-                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:text="Еда" />
 

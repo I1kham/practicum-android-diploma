@@ -5,5 +5,6 @@ import ru.practicum.android.diploma.util.ResponseStatusCode
 
 sealed interface DetailsFragmentState {
     data class Content(val vacancy: Vacancy) : DetailsFragmentState
-    data class ERROR(val errState: ResponseStatusCode?) : DetailsFragmentState
+    data class Error(val errState: ResponseStatusCode?) : DetailsFragmentState
+    data object Empty : DetailsFragmentState
 }

@@ -63,4 +63,5 @@
     <string name="cant_get_cities_list">Не удалось получить список</string>
     <string name="other_regions">Другие регионы</string>
     <string name="work_place_mask">%1$s%2$s</string>
+    <string name="job_item_title_mask">%1$s, %2$s</string>
 </resources>

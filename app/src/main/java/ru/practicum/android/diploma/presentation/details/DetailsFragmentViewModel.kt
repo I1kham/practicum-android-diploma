@@ -43,7 +43,7 @@ class DetailsFragmentViewModel(
                                 vacancy = it
                                 renderState(DetailsFragmentState.Content(it))
                                 _isFavoriteLiveData.postValue(favoritesInteractor.isFavoriteCheck(id))
-                            } ?: renderState(DetailsFragmentState.ERROR(ResponseStatusCode.Ok))
+                            } ?: renderState(DetailsFragmentState.Empty)
                         }
 
                         else -> {
@@ -53,7 +53,7 @@ class DetailsFragmentViewModel(
                     }
                 }
             }
-        } ?: renderState(DetailsFragmentState.ERROR(ResponseStatusCode.NoInternet))
+        } ?: renderState(DetailsFragmentState.Error(ResponseStatusCode.Error))
     }
 
     private suspend fun getVacancyBd(id: String) {
@@ -62,7 +62,7 @@ class DetailsFragmentViewModel(
             vacancy = it
             renderState(DetailsFragmentState.Content(it))
             _isFavoriteLiveData.postValue(favoritesInteractor.isFavoriteCheck(id))
-        } ?: renderState(DetailsFragmentState.ERROR(ResponseStatusCode.Ok))
+        } ?: renderState(DetailsFragmentState.Error(responseStatusCode))
     }
 
     fun shareVacancy() {

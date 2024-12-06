@@ -25,6 +25,7 @@ class IndustryFragment : Fragment() {
     private val viewModel: IndustryViewModel by viewModel()
     private var _binding: FragmentIndustryBinding? = null
     private val binding get() = _binding!!
+    private var editTExtListener: TextWatcher? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +53,6 @@ class IndustryFragment : Fragment() {
     private fun setupUI() {
         binding.back.setOnClickListener {
             findNavController().popBackStack()
-            // viewModel.saveFilter() // в части изменения логики экрана надо будет поправить
         }
 
         binding.backBtn.setOnClickListener {
@@ -91,6 +91,7 @@ class IndustryFragment : Fragment() {
         binding.contentLayout.visibility = View.GONE
         binding.noInternetLay.visibility = View.VISIBLE
         keyBoardVisibility(false)
+        binding.filterEditText.removeTextChangedListener(editTExtListener)
     }
 
     private fun showEmptyPlaceholder() {
@@ -134,7 +135,7 @@ class IndustryFragment : Fragment() {
     }
 
     private fun setupSearchFilter() {
-        binding.filterEditText.addTextChangedListener(object : TextWatcher {
+        editTExtListener = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // Не нужно
             }
@@ -146,7 +147,8 @@ class IndustryFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 updateSearchIcon(s.isNullOrBlank())
             }
-        })
+        }
+        binding.filterEditText.addTextChangedListener(editTExtListener)
         binding.clearSearchButton.setOnClickListener {
             binding.filterEditText.text?.clear()
         }
@@ -163,7 +165,7 @@ class IndustryFragment : Fragment() {
 
     private fun updateSearchIcon(isEmpty: Boolean) {
         binding.clearSearchButton.setImageResource(
-            if (isEmpty) R.drawable.search_24px else R.drawable.close_24px
+            if (isEmpty) R.drawable.search_24px else R.drawable.close
         )
     }
 

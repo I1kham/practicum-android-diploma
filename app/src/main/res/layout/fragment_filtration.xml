@@ -213,7 +213,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:backgroundTint="@color/light_gray"
-            android:src="@drawable/close_24px"
+            android:src="@drawable/close"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/input_salary_layout"
             app:layout_constraintEnd_toEndOf="@+id/input_salary_layout"

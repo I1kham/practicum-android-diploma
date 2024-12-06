@@ -44,17 +44,13 @@ class SearchJobFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.getFilter()
         super.onViewCreated(view, savedInstanceState)
         initEditText()
         initRecyclerView()
         observeViewModel()
         prepareOnItemClick()
         prepareFilterButton()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.getFilter()
     }
 
     private fun prepareFilterButton() {
@@ -78,9 +74,7 @@ class SearchJobFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updateSearchIcon(s.isNullOrEmpty())
-                if (!s.isNullOrEmpty()) {
                     viewModel.searchDebounced(s.toString().trim())
-                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -92,8 +86,10 @@ class SearchJobFragment : Fragment() {
 
         binding.clearSearchButton.setOnClickListener {
             binding.searchEditText.text?.clear()
+            binding.searchEditText.clearFocus()
             binding.progressBar.isVisible = false
             binding.bottomProgressBar.isVisible = false
+            binding.vacanciesRecyclerView.scrollToPosition(0)
             viewModel.clearVacancies()
         }
     }
@@ -102,7 +98,6 @@ class SearchJobFragment : Fragment() {
         binding.vacanciesRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = vacancyAdapter
-
             scrollListener?.let { removeOnScrollListener(it) }
             scrollListener = object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -127,10 +122,16 @@ class SearchJobFragment : Fragment() {
         viewModel.vacanciesState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 VacanciesState.Loading -> {
+                    binding.searchLayout.isVisible = false
                     val itemsCount = binding.vacanciesRecyclerView.childCount
                     if (itemsCount > 0) {
                         binding.bottomProgressBar.isVisible = true
                     } else {
+                        binding.vacanciesRecyclerView.visibility = View.GONE
+                        vacancyAdapter.run {
+                            submitList(null)
+                            notifyDataSetChanged()
+                        }
                         showTopProgressBar()
                         binding.messageChip.isVisible = false
                     }
@@ -166,7 +167,7 @@ class SearchJobFragment : Fragment() {
                     binding.messageChip.text = context?.getString(R.string.no_such_vacancies)
                 }
 
-                is VacanciesState.Start -> {
+                VacanciesState.Start -> {
                     clearRecyclerView()
                     binding.messageChip.isVisible = false
                 }
@@ -181,29 +182,30 @@ class SearchJobFragment : Fragment() {
     }
 
     private fun clearRecyclerView() {
-        updateRecyclerView(emptyList())
         binding.vacanciesRecyclerView.isVisible = false
         showHiddenState()
     }
 
     private fun updateSearchIcon(isEmpty: Boolean) {
         binding.clearSearchButton.setImageResource(
-            if (isEmpty) R.drawable.search_24px else R.drawable.close_24px
+            if (isEmpty) R.drawable.search_24px else R.drawable.close
         )
+        binding.searchLayout.isVisible = isEmpty
     }
 
     private fun showHiddenState() {
-        binding.searchLayout.visibility = View.VISIBLE
         binding.errorLayout.visibility = View.GONE
         binding.noJobsLayout.visibility = View.GONE
+        binding.vacanciesRecyclerView.isVisible = false
+        binding.searchLayout.visibility = View.VISIBLE
     }
 
     private fun showTopProgressBar() {
-        binding.progressBar.visibility = View.VISIBLE
-        binding.searchLayout.visibility = View.GONE
+        binding.searchLayout.isVisible = false
         binding.errorLayout.visibility = View.GONE
         binding.noJobsLayout.visibility = View.GONE
         binding.vacanciesRecyclerView.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     private fun hideProgressBar() {
