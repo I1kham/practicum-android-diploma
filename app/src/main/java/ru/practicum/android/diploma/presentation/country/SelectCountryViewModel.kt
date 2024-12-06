@@ -45,7 +45,7 @@ class SelectCountryViewModel(
                 FilterShared(
                     countryId = country.id,
                     countryName = country.name,
-                    regionId = null,
+                    regionId = country.id,
                     regionName = null,
                     industryName = filterShared?.industryName,
                     industryId = filterShared?.industryId,

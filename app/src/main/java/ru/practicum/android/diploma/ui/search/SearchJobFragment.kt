@@ -44,17 +44,13 @@ class SearchJobFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewModel.getFilter()
         super.onViewCreated(view, savedInstanceState)
         initEditText()
         initRecyclerView()
         observeViewModel()
         prepareOnItemClick()
         prepareFilterButton()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.getFilter()
     }
 
     private fun prepareFilterButton() {
@@ -78,9 +74,7 @@ class SearchJobFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 updateSearchIcon(s.isNullOrEmpty())
-                if (!s.isNullOrEmpty()) {
                     viewModel.searchDebounced(s.toString().trim())
-                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -92,8 +86,10 @@ class SearchJobFragment : Fragment() {
 
         binding.clearSearchButton.setOnClickListener {
             binding.searchEditText.text?.clear()
+            binding.searchEditText.clearFocus()
             binding.progressBar.isVisible = false
             binding.bottomProgressBar.isVisible = false
+            binding.vacanciesRecyclerView.scrollToPosition(0)
             viewModel.clearVacancies()
         }
     }
@@ -194,6 +190,7 @@ class SearchJobFragment : Fragment() {
         binding.clearSearchButton.setImageResource(
             if (isEmpty) R.drawable.search_24px else R.drawable.close
         )
+        binding.searchLayout.isVisible = isEmpty
     }
 
     private fun showHiddenState() {
