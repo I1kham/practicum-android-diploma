@@ -27,6 +27,7 @@ class CitySelectFragment : Fragment() {
     private val binding get() = _binding!!
     private val cardAdapter = TextCardAdapter()
     private var onItemClick: ((Area) -> Unit)? = null
+    private var editTExtListener: TextWatcher? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -93,6 +94,7 @@ class CitySelectFragment : Fragment() {
                     binding.noInternetLay.isVisible = true
                     keyBoardVisibility(false)
                     binding.progressBar.isVisible = false
+                    binding.etSearchRegionEditText.removeTextChangedListener(editTExtListener)
                 }
 
                 CitySelectState.Loading -> {
@@ -128,7 +130,7 @@ class CitySelectFragment : Fragment() {
     }
 
     private fun initEditText() {
-        binding.etSearchRegionEditText.addTextChangedListener(object : TextWatcher {
+        editTExtListener = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // функция не используется
             }
@@ -145,7 +147,8 @@ class CitySelectFragment : Fragment() {
                     binding.errorLayout.isVisible = false
                 }
             }
-        })
+        }
+        binding.etSearchRegionEditText.addTextChangedListener(editTExtListener)
 
         binding.clearSearchButton.setOnClickListener {
             binding.etSearchRegionEditText.text?.clear()
